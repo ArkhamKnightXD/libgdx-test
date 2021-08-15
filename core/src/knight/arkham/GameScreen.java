@@ -1,8 +1,8 @@
 package knight.arkham;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,31 +17,33 @@ import com.badlogic.gdx.utils.TimeUtils;
 import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
-public class FirstGame extends ApplicationAdapter {
+//clase que se encargara de manejar la pantalla del juego
+public class GameScreen implements Screen {
+
+	final Drop game;
 
 	// las variables que almacenaran imagenes deben definirse con el tipo de dato texture
 	//represents a loaded image that is stored in video ram
-	private Texture bucketImage;
-	private Texture dropImage;
-	private Texture img;
+	private final Texture bucketImage;
+	private final Texture dropImage;
 
 	//Las variables que almacenaras sonidos fx se definen con sound y las que guardaran musica se definen con music
 	//La diferencia entre sound y music es que sound al ser mas pequeño es guardado en memoria
 	//en cambio music es transmitida directamente de donde este por tener mayor tamaño y no poder ser guardada en memoria
 	//a rule of thumb, you should use a Sound instance if your sample is shorter than
 	// 10 seconds, and a Music instance for longer audio pieces.
-	private Sound dropSound;
-	private Music rainMusic;
+	private final Sound dropSound;
+	private final Music rainMusic;
 
 	//Aqui definimos la variable que sera la camara
-	private OrthographicCamera camera;
+	private final OrthographicCamera camera;
 
 	//The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
-	private SpriteBatch batch;
+	private final SpriteBatch batch;
 
 	//para manejar la posicion y tamaño del bucket necesitamos esta variable, basicamente con esto es que manejaremos
 	// las imagenes en el juego
-	private Rectangle bucket;
+	private final Rectangle bucket;
 
 	//seteamos un vector para guardar la posicion donde toco el mouse, indicamos que es final, para solo crear
 	//el vector una sola vez por proposito de performance
@@ -49,10 +51,56 @@ public class FirstGame extends ApplicationAdapter {
 
 	//como seran varias gotas de lluvia tendremos un array de rectangle, la clase array de libgdx es
 	//mas eficiente en rendimiento que arraylist por eso se recomiendo utilizar esto
-	private Array<Rectangle> raindrops;
+	private final Array<Rectangle> raindrops;
 
 //	We also need to keep track of the last time we spawned a raindrop, so we add another field:
 	private long lastDropTime;
+
+	//Almacenar cuantas g
+	private int dropsGathered;
+
+	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
+	//los elementos que tendra esta pantalla, podemos reemplazar el metodo create por el constructor
+	public GameScreen(final Drop game) {
+
+		this.game = game;
+
+		//instanciamos el arreglo y llamo a la funcion de raindrops
+		raindrops = new Array<>();
+		spawnRaindrop();
+
+		//seteamos el spritebatch
+		batch = new SpriteBatch();
+
+		//De esta forma guardo las imagenes de assets en la variables que ya defini
+
+		bucketImage = new Texture("bucket.png");
+		dropImage = new Texture("drop.png");
+
+		//De esta forma guardo tanto los fx y musica de los assets en las variables que ya defini
+		//utilizamos el files.internal para referirnos a los elementos de nuestra carpeta assets
+		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+
+		//setear que la musica se ejecute desde el principio y se repita cuando acabe
+		rainMusic.play();
+		rainMusic.setLooping(true);
+
+		//seteamos la camara
+		camera = new OrthographicCamera();
+
+		//le indicamos las dimensiones que cubrira la camara de nuestra pantalla
+		camera.setToOrtho(false, 800, 480);
+
+		//definimos la posicion y tamaño del bucket
+		bucket = new Rectangle();
+
+		//con esto calculos en x centramos el bucket
+		bucket.x = 800 / 2 - 64 / 2;
+		bucket.y = 20;
+		bucket.width = 64;
+		bucket.height = 64;
+	}
 
 
 	private void spawnRaindrop() {
@@ -76,59 +124,17 @@ public class FirstGame extends ApplicationAdapter {
 	}
 
 
-	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
-	//los elementos que tendra nuestro juego
-	@Override
-	public void create () {
-
-		//instanciamos el arreglo y llamo a la funcion de raindrops
-		raindrops = new Array<Rectangle>();
-		spawnRaindrop();
-
-		//seteamos el spritebatch
-		batch = new SpriteBatch();
-
-		//De esta forma guardo las imagenes de assets en la variables que ya defini
-		img = new Texture("badlogic.jpg");
-
-		bucketImage = new Texture("bucket.png");
-		dropImage = new Texture("drop.png");
-
-		//De esta forma guardo tanto los fx y musica de los assets en las variables que ya defini
-		//utilizamos el files.internal para referirnos a los elementos de nuestra carpeta assets
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-
-		//setear que la musica se ejecute desde el principio y se repita cuando acabe
-		rainMusic.play();
-		rainMusic.setLooping(true);
-
-		//seteamos la camara
-		camera = new OrthographicCamera();
-
-		//le indicamos las dimensiones de nuestra pantalla
-		camera.setToOrtho(false, 800, 400);
-
-		//definimos la posicion y tamaño del bucket
-		bucket = new Rectangle();
-
-		//con esto calculos en x centramos el bucket
-		bucket.x = 800 / 2 - 64 / 2;
-		bucket.y = 20;
-		bucket.width = 64;
-		bucket.height = 64;
-	}
-
 	//Este seria el loop principal del juego el equivalente de update en unity
 	@Override
-	public void render () {
+	public void render (float delta) {
 
 		//Actualizamos la camara una vez por frame
 		camera.update();
 
 		//method that will check how much time has passed since we
 		// spawned a new raindrop, and creates a new one if necessary
-		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
+		if(TimeUtils.nanoTime() - lastDropTime > 1000000000)
+			spawnRaindrop();
 
 		//Aqui nos encargamos de hacer descender las gotas a una velocidad constante
 		for (Iterator<Rectangle> iter = raindrops.iterator(); iter.hasNext(); ) {
@@ -142,6 +148,8 @@ public class FirstGame extends ApplicationAdapter {
 			//The Rectangle.overlaps() method checks if this rectangle overlaps with another rectangle.
 			if(raindrop.overlaps(bucket)) {
 
+				//Aumentamos la puntuacion de gotas conseguidas
+				dropsGathered++;
 				dropSound.play();
 				iter.remove();
 			}
@@ -149,26 +157,27 @@ public class FirstGame extends ApplicationAdapter {
 
 
 		//Aqui manejo el color de fondo que tendra la ventana
-		ScreenUtils.clear(100, 100, 100, 1);
+		ScreenUtils.clear(0, 0, 0.2f, 1);
 
 		//Aqui tambien seteamos la camara en el batch
-		batch.setProjectionMatrix(camera.combined);
+		game.batch.setProjectionMatrix(camera.combined);
 
 		//The SpriteBatch class helps make OpenGL happy. It will record all drawing commands in between SpriteBatch.begin()
 		// and SpriteBatch.end(). Once we call SpriteBatch.end() it will submit all drawing requests we made at once,
 		// speeding up rendering quite a bit
-		batch.begin();
+		game.batch.begin();
 
-		//dibujo las imagenes en las posiciones ya indicadas
-		batch.draw(bucketImage, bucket.x, bucket.y);
+		//dibujo las imagenes en las posiciones ya indicadas, tambien muestro un texto con la cantidad de gotas conseguidas
+		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
+		game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
 
 		//Aqui nos encargamos de renderizar las gotas
 		for(Rectangle raindrop: raindrops) {
 
-			batch.draw(dropImage, raindrop.x, raindrop.y);
+			game.batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
 
-		batch.end();
+		game.batch.end();
 
 //		If the user touches the screen (or presses a mouse button), we want the bucket
 //		to center around that position horizontally
@@ -196,16 +205,46 @@ public class FirstGame extends ApplicationAdapter {
 		if(bucket.x > 800 - 64) bucket.x = 800 - 64;
 	}
 
+	@Override
+	public void show() {
+
+		// start the playback of the background music
+		// when the screen is shown
+		rainMusic.play();
+	}
+
+
+	@Override
+	public void resize(int width, int height) {
+
+	}
+
+	@Override
+	public void pause() {
+
+	}
+
+	@Override
+	public void resume() {
+
+	}
+
+	@Override
+	public void hide() {
+
+	}
+
 	//Este metodo es solo llamado cuando se cierra la aplicacion
 	//lo recomendable es que hagamos dispose de todos asset que instanciamos y tambien el batch
 	//Asi ayudamos al sistema operativo a limpiar la memoria
+	//nota el dispose cuando se implementa screen a una clase no se llama automaticamente por lo tanto es
+	//deber de nosotros llamarlo
 	@Override
 	public void dispose () {
 
 //		Disposables are usually native resources which are not handled by the Java garbage collector.
 //		This is the reason why we need to manually dispose of them.
 		batch.dispose();
-		img.dispose();
 		rainMusic.dispose();
 		dropSound.dispose();
 		dropImage.dispose();

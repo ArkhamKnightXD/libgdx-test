@@ -2,7 +2,7 @@ package knight.arkham.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import knight.arkham.FirstGame;
+import knight.arkham.Drop;
 
 public class DesktopLauncher {
 
@@ -14,9 +14,9 @@ public class DesktopLauncher {
 
 		config.title = "drop";
 		config.width = 800;
-		config.height = 400;
+		config.height = 480;
 
 		//Aqui finalmente ejecutamos el codigo fuente de nuestro juego junto a las configuraciones que indicamos
-		new LwjglApplication(new FirstGame(), config);
+		new LwjglApplication(new Drop(), config);
 	}
 }

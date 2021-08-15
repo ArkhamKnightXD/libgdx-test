@@ -1,0 +1,81 @@
+package knight.arkham;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.ScreenUtils;
+
+//clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
+public class MainMenuScreen implements Screen {
+
+    final Drop game;
+
+    OrthographicCamera camera;
+
+    public MainMenuScreen(final Drop game) {
+
+        this.game = game;
+
+        //En el menu principal tambien debemos setear otra camara, supongo?
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 480);
+    }
+
+    //todos estos metodos deben de ser implementados por utilizar screen
+    @Override
+    public void show() {
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+        ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        camera.update();
+
+//        Aqui utilizaremos el batch y el font de la clase game
+        game.batch.setProjectionMatrix(camera.combined);
+
+        game.batch.begin();
+
+        //dibujamos el texto en la pantalla
+        game.font.draw(game.batch, "Welcome to Drop!!! ", 100, 150);
+        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
+
+        game.batch.end();
+
+        //si el mouse toca la pantalla , cambiaremos la pantalla del menu hacia la del juego
+        if (Gdx.input.isTouched()) {
+
+            game.setScreen(new GameScreen(game));
+            dispose();
+        }
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+
+    }
+}
