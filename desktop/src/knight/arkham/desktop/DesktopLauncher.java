@@ -12,6 +12,7 @@ public class DesktopLauncher {
 		//Con esto podemos modificar varios aspectos de la build desktop solamente
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
+		//Aqui seteamos el titulo de la pantalla junto al tamaño que tendra
 		config.title = "drop";
 		config.width = 800;
 		config.height = 480;

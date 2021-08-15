@@ -8,24 +8,19 @@ import com.badlogic.gdx.utils.ScreenUtils;
 //clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
 public class MainMenuScreen implements Screen {
 
-    final Drop game;
+    private final Drop game;
 
-    OrthographicCamera camera;
+    private final OrthographicCamera camera;
 
     public MainMenuScreen(final Drop game) {
 
         this.game = game;
 
-        //En el menu principal tambien debemos setear otra camara, supongo?
+        //En el menu principal tambien debemos setear otra camara, en cada pantalla esto debe de ser asi
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
     }
 
-    //todos estos metodos deben de ser implementados por utilizar screen
-    @Override
-    public void show() {
-
-    }
 
     @Override
     public void render(float delta) {
@@ -51,6 +46,12 @@ public class MainMenuScreen implements Screen {
             game.setScreen(new GameScreen(game));
             dispose();
         }
+
+    }
+
+    //todos estos metodos deben de ser implementados por utilizar screen
+    @Override
+    public void show() {
 
     }
 

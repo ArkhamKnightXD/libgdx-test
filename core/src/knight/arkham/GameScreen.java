@@ -20,7 +20,7 @@ import java.util.Iterator;
 //clase que se encargara de manejar la pantalla del juego
 public class GameScreen implements Screen {
 
-	final Drop game;
+	private final Drop game;
 
 	// las variables que almacenaran imagenes deben definirse con el tipo de dato texture
 	//represents a loaded image that is stored in video ram
@@ -123,7 +123,6 @@ public class GameScreen implements Screen {
 		lastDropTime = TimeUtils.nanoTime();
 	}
 
-
 	//Este seria el loop principal del juego el equivalente de update en unity
 	@Override
 	public void render (float delta) {
@@ -137,24 +136,7 @@ public class GameScreen implements Screen {
 			spawnRaindrop();
 
 		//Aqui nos encargamos de hacer descender las gotas a una velocidad constante
-		for (Iterator<Rectangle> iter = raindrops.iterator(); iter.hasNext(); ) {
-
-			Rectangle raindrop = iter.next();
-			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
-
-			if(raindrop.y + 64 < 0) iter.remove();
-
-			//Si la gota choca con el bucket tocara el fx y eliminara la gota del arreglo
-			//The Rectangle.overlaps() method checks if this rectangle overlaps with another rectangle.
-			if(raindrop.overlaps(bucket)) {
-
-				//Aumentamos la puntuacion de gotas conseguidas
-				dropsGathered++;
-				dropSound.play();
-				iter.remove();
-			}
-		}
-
+		makeRainFall();
 
 		//Aqui manejo el color de fondo que tendra la ventana
 		ScreenUtils.clear(0, 0, 0.2f, 1);
@@ -179,8 +161,55 @@ public class GameScreen implements Screen {
 
 		game.batch.end();
 
-//		If the user touches the screen (or presses a mouse button), we want the bucket
-//		to center around that position horizontally
+		bucketMouseMovement();
+		bucketArrowKeysMovement();
+
+		//Aqui nos aseguramos que el bucket no se salga de la pantalla
+		if(bucket.x < 0)
+			bucket.x = 0;
+
+		if(bucket.x > 800 - 64)
+			bucket.x = 800 - 64;
+	}
+
+	private void makeRainFall() {
+
+		for (Iterator<Rectangle> iter = raindrops.iterator(); iter.hasNext(); ) {
+
+			Rectangle raindrop = iter.next();
+
+			//las gotas bajaran a esta velocidad
+			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+
+			//si la posicion y de las gotas es menor que 0 estas seran eliminadas
+			if(raindrop.y + 64 < 0) iter.remove();
+
+			//Si la gota choca con el bucket tocara el fx y eliminara la gota del arreglo
+			//The Rectangle.overlaps() method checks if this rectangle overlaps with another rectangle.
+			if(raindrop.overlaps(bucket)) {
+
+				//Aumentamos la puntuacion de gotas conseguidas
+				dropsGathered++;
+				dropSound.play();
+				iter.remove();
+			}
+		}
+	}
+
+
+	private void bucketArrowKeysMovement() {
+
+		//Para mover el bucket mediante arrow keys, para manejar la velocidad de forma correcta
+		// multiplicamos por la cantidad de tiempo que paso desde el ultimo frame en este caso es el deltaTime
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+			bucket.x -= 400 * Gdx.graphics.getDeltaTime();
+
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+			bucket.x += 400 * Gdx.graphics.getDeltaTime();
+	}
+
+
+	private void bucketMouseMovement() {
 
 		//primero preguntamos si la pantalla esta siendo tocada por el mouse o un dedo
 		if(Gdx.input.isTouched()) {
@@ -194,16 +223,8 @@ public class GameScreen implements Screen {
 			//movemos el bucket a esa posicion
 			bucket.x = touchPos.x - 64 / 2;
 		}
-
-		//Para mover el bucket mediante arrow keys, para manejar la velocidad de forma correcta
-		// multiplicamos por la cantidad de tiempo que paso desde el ultimo frame en este caso es el deltaTime
-		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket.x -= 400 * Gdx.graphics.getDeltaTime();
-		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) bucket.x += 400 * Gdx.graphics.getDeltaTime();
-
-		//Aqui nos aseguramos que el bucket no se salga de la pantalla
-		if(bucket.x < 0) bucket.x = 0;
-		if(bucket.x > 800 - 64) bucket.x = 800 - 64;
 	}
+
 
 	@Override
 	public void show() {
@@ -229,9 +250,11 @@ public class GameScreen implements Screen {
 
 	}
 
+//	If you don't plan to reuse the Screen instance, having screen.hide() call screen.dispose() is the perfect place to do it.
 	@Override
 	public void hide() {
 
+		dispose();
 	}
 
 	//Este metodo es solo llamado cuando se cierra la aplicacion
