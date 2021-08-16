@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
-import knight.arkham.screens.GameScreen;
 
 //clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
 public class MainMenuScreen implements Screen {

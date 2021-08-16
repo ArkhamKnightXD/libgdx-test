@@ -19,14 +19,12 @@ public class EndGameScreen implements Screen {
 
     private final boolean playerHasWin;
 
-
     public EndGameScreen(Drop game, boolean playerHasWin) {
 
         this.game = game;
         this.playerHasWin = playerHasWin;
 
         camera = new OrthographicCamera();
-
         camera.setToOrtho(false, 800, 480);
 
         playerWinSound = Gdx.audio.newSound(Gdx.files.internal("fx/win.wav"));
@@ -43,6 +41,7 @@ public class EndGameScreen implements Screen {
         else
             playerLostSound.play();
     }
+
 
     @Override
     public void render(float delta) {

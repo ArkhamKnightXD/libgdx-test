@@ -10,12 +10,14 @@ import knight.arkham.screens.MainMenuScreen;
 // provides some helper methods for this purpose,
 public class Drop extends Game {
 
+    //The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
     //Estos elementos seran publicos para llamarse en el mainmenuscreen
     //En resumen para todas las pantallas debemos utilizar estos font y batch
     public SpriteBatch batch;
 
 //    BitmapFont object is used, along with a SpriteBatch, to render text onto the screen.
     public BitmapFont font;
+
 
     @Override
     public void create() {
@@ -28,16 +30,16 @@ public class Drop extends Game {
         this.setScreen(new MainMenuScreen(this));
     }
 
-
-    //Why?
+    //A common mistake is to forget to call super.render() with a Game implementation. Without this call, the Screen that
+    // you set in the create() method will not be rendered if you override the render method in your Game class!
     public void render() {
         super.render(); // important!
     }
+
 
     public void dispose() {
 
         batch.dispose();
         font.dispose();
     }
-
 }

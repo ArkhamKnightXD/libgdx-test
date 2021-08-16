@@ -7,7 +7,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import knight.arkham.Drop;
-import knight.arkham.screens.EndGameScreen;
 import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
@@ -40,9 +38,6 @@ public class GameScreen implements Screen {
 	//Aqui definimos la variable que sera la camara
 	private final OrthographicCamera camera;
 
-	//The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
-	private final SpriteBatch batch;
-
 	//para manejar la posicion y tamaño del bucket necesitamos esta variable, basicamente con esto es que manejaremos
 	// las imagenes en el juego
 	private final Rectangle bucket;
@@ -63,8 +58,6 @@ public class GameScreen implements Screen {
 
 	private int playerLives;
 
-	private boolean playerHasWin;
-
 	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
 	//los elementos que tendra esta pantalla, podemos reemplazar el metodo create por el constructor
 	public GameScreen(final Drop game) {
@@ -74,13 +67,10 @@ public class GameScreen implements Screen {
 		//instanciamos el arreglo y llamo a la funcion de raindrops
 		raindrops = new Array<>();
 		spawnRaindrop();
+
 		playerLives = 3;
 
-		//seteamos el spritebatch
-		batch = new SpriteBatch();
-
 		//De esta forma guardo las imagenes de assets en la variables que ya defini
-
 		bucketImage = new Texture("images/bucket.png");
 		dropImage = new Texture("images/drop.png");
 
@@ -181,14 +171,12 @@ public class GameScreen implements Screen {
 
 		if (playerLives == 0){
 
-			playerHasWin = false;
-			game.setScreen(new EndGameScreen(game, playerHasWin));
+			game.setScreen(new EndGameScreen(game, false));
 		}
 
 		if (gameScore == 50){
 
-			playerHasWin = true;
-			game.setScreen(new EndGameScreen(game, playerHasWin));
+			game.setScreen(new EndGameScreen(game, true));
 		}
 	}
 
@@ -310,7 +298,6 @@ public class GameScreen implements Screen {
 
 //		Disposables are usually native resources which are not handled by the Java garbage collector.
 //		This is the reason why we need to manually dispose of them.
-		batch.dispose();
 		rainMusic.dispose();
 		dropSound.dispose();
 		dropImage.dispose();
