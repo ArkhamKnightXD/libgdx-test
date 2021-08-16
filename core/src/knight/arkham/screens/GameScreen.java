@@ -1,4 +1,4 @@
-package knight.arkham;
+package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -14,6 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
+import knight.arkham.Drop;
+import knight.arkham.screens.EndGameScreen;
 import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
@@ -56,8 +58,12 @@ public class GameScreen implements Screen {
 //	We also need to keep track of the last time we spawned a raindrop, so we add another field:
 	private long lastDropTime;
 
-	//Almacenar cuantas g
-	private int dropsGathered;
+	//Almacenar cuantas gotas has conseguido
+	private int gameScore;
+
+	private int playerLives;
+
+	private boolean playerHasWin;
 
 	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
 	//los elementos que tendra esta pantalla, podemos reemplazar el metodo create por el constructor
@@ -68,19 +74,20 @@ public class GameScreen implements Screen {
 		//instanciamos el arreglo y llamo a la funcion de raindrops
 		raindrops = new Array<>();
 		spawnRaindrop();
+		playerLives = 3;
 
 		//seteamos el spritebatch
 		batch = new SpriteBatch();
 
 		//De esta forma guardo las imagenes de assets en la variables que ya defini
 
-		bucketImage = new Texture("bucket.png");
-		dropImage = new Texture("drop.png");
+		bucketImage = new Texture("images/bucket.png");
+		dropImage = new Texture("images/drop.png");
 
 		//De esta forma guardo tanto los fx y musica de los assets en las variables que ya defini
 		//utilizamos el files.internal para referirnos a los elementos de nuestra carpeta assets
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+		dropSound = Gdx.audio.newSound(Gdx.files.internal("fx/drop.wav"));
+		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music/rain.mp3"));
 
 		//setear que la musica se ejecute desde el principio y se repita cuando acabe
 		rainMusic.play();
@@ -150,7 +157,8 @@ public class GameScreen implements Screen {
 		game.batch.begin();
 
 		//dibujo las imagenes en las posiciones ya indicadas, tambien muestro un texto con la cantidad de gotas conseguidas
-		game.font.draw(game.batch, "Drops Collected: " + dropsGathered, 0, 480);
+		game.font.draw(game.batch, "Drops Collected: " + gameScore, 0, 480);
+		game.font.draw(game.batch, "Player Lives: " + playerLives, 336, 480);
 		game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
 
 		//Aqui nos encargamos de renderizar las gotas
@@ -170,7 +178,20 @@ public class GameScreen implements Screen {
 
 		if(bucket.x > 800 - 64)
 			bucket.x = 800 - 64;
+
+		if (playerLives == 0){
+
+			playerHasWin = false;
+			game.setScreen(new EndGameScreen(game, playerHasWin));
+		}
+
+		if (gameScore == 50){
+
+			playerHasWin = true;
+			game.setScreen(new EndGameScreen(game, playerHasWin));
+		}
 	}
+
 
 	private void makeRainFall() {
 
@@ -178,21 +199,43 @@ public class GameScreen implements Screen {
 
 			Rectangle raindrop = iter.next();
 
-			//las gotas bajaran a esta velocidad
-			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+//			//las gotas bajaran a esta velocidad
+			if (gameScore < 15)
+				raindrop.y -= 250 * Gdx.graphics.getDeltaTime();
 
-			//si la posicion y de las gotas es menor que 0 estas seran eliminadas
-			if(raindrop.y + 64 < 0) iter.remove();
+			if (gameScore >= 15 && gameScore < 31)
+				raindrop.y -= 450 * Gdx.graphics.getDeltaTime();
 
-			//Si la gota choca con el bucket tocara el fx y eliminara la gota del arreglo
-			//The Rectangle.overlaps() method checks if this rectangle overlaps with another rectangle.
-			if(raindrop.overlaps(bucket)) {
+			if (gameScore >= 31)
+				raindrop.y -= 650 * Gdx.graphics.getDeltaTime();
 
-				//Aumentamos la puntuacion de gotas conseguidas
-				dropsGathered++;
-				dropSound.play();
-				iter.remove();
-			}
+			decrementLives(iter, raindrop);
+
+			incrementScore(iter, raindrop);
+		}
+	}
+
+
+	private void decrementLives(Iterator<Rectangle> iter, Rectangle raindrop) {
+
+		//si la posicion y de las gotas es menor que 0 estas seran eliminadas
+		if(raindrop.y + 64 < 0){
+
+			playerLives--;
+			iter.remove();
+		}
+	}
+
+	private void incrementScore(Iterator<Rectangle> iter, Rectangle raindrop) {
+
+		//Si la gota choca con el bucket tocara el fx y eliminara la gota del arreglo
+		//The Rectangle.overlaps() method checks if this rectangle overlaps with another rectangle.
+		if(raindrop.overlaps(bucket)) {
+
+			//Aumentamos la puntuacion de gotas conseguidas
+			gameScore++;
+			dropSound.play();
+			iter.remove();
 		}
 	}
 
@@ -202,10 +245,10 @@ public class GameScreen implements Screen {
 		//Para mover el bucket mediante arrow keys, para manejar la velocidad de forma correcta
 		// multiplicamos por la cantidad de tiempo que paso desde el ultimo frame en este caso es el deltaTime
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			bucket.x -= 400 * Gdx.graphics.getDeltaTime();
+			bucket.x -= 500 * Gdx.graphics.getDeltaTime();
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			bucket.x += 400 * Gdx.graphics.getDeltaTime();
+			bucket.x += 500 * Gdx.graphics.getDeltaTime();
 	}
 
 

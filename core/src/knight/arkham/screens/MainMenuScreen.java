@@ -1,13 +1,16 @@
-package knight.arkham;
+package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
+import knight.arkham.Drop;
+import knight.arkham.screens.GameScreen;
 
 //clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
 public class MainMenuScreen implements Screen {
 
+    //Realizo inyeccion de dependencia de mi clase juego
     private final Drop game;
 
     private final OrthographicCamera camera;
