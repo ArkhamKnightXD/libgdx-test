@@ -1,13 +1,13 @@
 package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
 
-public class EndGameScreen implements Screen {
+public class EndGameScreen extends ScreenAdapter {
 
     private final Drop game;
 
@@ -72,25 +72,6 @@ public class EndGameScreen implements Screen {
         }
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
 
     @Override
     public void dispose() {

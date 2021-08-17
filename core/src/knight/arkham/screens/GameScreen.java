@@ -2,7 +2,7 @@ package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
 //clase que se encargara de manejar la pantalla del juego
-public class GameScreen implements Screen {
+public class GameScreen extends ScreenAdapter {
 
 	private final Drop game;
 
@@ -263,22 +263,6 @@ public class GameScreen implements Screen {
 		// start the playback of the background music
 		// when the screen is shown
 		rainMusic.play();
-	}
-
-
-	@Override
-	public void resize(int width, int height) {
-
-	}
-
-	@Override
-	public void pause() {
-
-	}
-
-	@Override
-	public void resume() {
-
 	}
 
 //	If you don't plan to reuse the Screen instance, having screen.hide() call screen.dispose() is the perfect place to do it.

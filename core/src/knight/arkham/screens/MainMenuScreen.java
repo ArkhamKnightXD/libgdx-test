@@ -1,13 +1,13 @@
 package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
 
 //clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen extends ScreenAdapter {
 
     //Realizo inyeccion de dependencia de mi clase juego
     private final Drop game;
@@ -51,31 +51,6 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    //todos estos metodos deben de ser implementados por utilizar screen
-    @Override
-    public void show() {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
 
     @Override
     public void dispose() {
