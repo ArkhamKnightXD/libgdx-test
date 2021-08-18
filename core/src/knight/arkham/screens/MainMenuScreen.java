@@ -10,13 +10,11 @@ import knight.arkham.Drop;
 public class MainMenuScreen extends ScreenAdapter {
 
     //Realizo inyeccion de dependencia de mi clase juego
-    private final Drop game;
+    private final Drop game = Drop.Instance;
 
     private final OrthographicCamera camera;
 
-    public MainMenuScreen(final Drop game) {
-
-        this.game = game;
+    public MainMenuScreen() {
 
         //En el menu principal tambien debemos setear otra camara, en cada pantalla esto debe de ser asi
         camera = new OrthographicCamera();
@@ -45,7 +43,7 @@ public class MainMenuScreen extends ScreenAdapter {
         //si el mouse toca la pantalla , cambiaremos la pantalla del menu hacia la del juego
         if (Gdx.input.isTouched()) {
 
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen());
             dispose();
         }
 

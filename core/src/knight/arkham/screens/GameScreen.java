@@ -20,7 +20,7 @@ import java.util.Iterator;
 //clase que se encargara de manejar la pantalla del juego
 public class GameScreen extends ScreenAdapter {
 
-	private final Drop game;
+	private final Drop game = Drop.Instance;
 
 	// las variables que almacenaran imagenes deben definirse con el tipo de dato texture
 	//represents a loaded image that is stored in video ram
@@ -60,9 +60,7 @@ public class GameScreen extends ScreenAdapter {
 
 	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
 	//los elementos que tendra esta pantalla, podemos reemplazar el metodo create por el constructor
-	public GameScreen(final Drop game) {
-
-		this.game = game;
+	public GameScreen() {
 
 		//instanciamos el arreglo y llamo a la funcion de raindrops
 		raindrops = new Array<>();
@@ -80,6 +78,7 @@ public class GameScreen extends ScreenAdapter {
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music/rain.mp3"));
 
 		//setear que la musica se ejecute desde el principio y se repita cuando acabe
+		rainMusic.setVolume(0.2f);
 		rainMusic.play();
 		rainMusic.setLooping(true);
 
@@ -109,7 +108,6 @@ public class GameScreen extends ScreenAdapter {
 		//el 64 es debido al tamaño del bucket
 		raindrop.x = MathUtils.random(0, 800-64);
 		raindrop.y = 480;
-
 		raindrop.width = 64;
 		raindrop.height = 64;
 
@@ -169,15 +167,12 @@ public class GameScreen extends ScreenAdapter {
 		if(bucket.x > 800 - 64)
 			bucket.x = 800 - 64;
 
-		if (playerLives == 0){
+		if (playerLives == 0)
+			game.setScreen(new EndGameScreen(false));
 
-			game.setScreen(new EndGameScreen(game, false));
-		}
+		if (gameScore == 50)
+			game.setScreen(new EndGameScreen(true));
 
-		if (gameScore == 50){
-
-			game.setScreen(new EndGameScreen(game, true));
-		}
 	}
 
 
@@ -192,10 +187,10 @@ public class GameScreen extends ScreenAdapter {
 				raindrop.y -= 250 * Gdx.graphics.getDeltaTime();
 
 			if (gameScore >= 15 && gameScore < 31)
-				raindrop.y -= 450 * Gdx.graphics.getDeltaTime();
+				raindrop.y -= 400 * Gdx.graphics.getDeltaTime();
 
 			if (gameScore >= 31)
-				raindrop.y -= 650 * Gdx.graphics.getDeltaTime();
+				raindrop.y -= 550 * Gdx.graphics.getDeltaTime();
 
 			decrementLives(iter, raindrop);
 
@@ -222,7 +217,7 @@ public class GameScreen extends ScreenAdapter {
 
 			//Aumentamos la puntuacion de gotas conseguidas
 			gameScore++;
-			dropSound.play();
+			dropSound.play(0.2f);
 			iter.remove();
 		}
 	}
@@ -233,10 +228,10 @@ public class GameScreen extends ScreenAdapter {
 		//Para mover el bucket mediante arrow keys, para manejar la velocidad de forma correcta
 		// multiplicamos por la cantidad de tiempo que paso desde el ultimo frame en este caso es el deltaTime
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-			bucket.x -= 500 * Gdx.graphics.getDeltaTime();
+			bucket.x -= 600 * Gdx.graphics.getDeltaTime();
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-			bucket.x += 500 * Gdx.graphics.getDeltaTime();
+			bucket.x += 600 * Gdx.graphics.getDeltaTime();
 	}
 
 

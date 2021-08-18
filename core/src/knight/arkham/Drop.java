@@ -10,6 +10,10 @@ import knight.arkham.screens.MainMenuScreen;
 // provides some helper methods for this purpose,
 public class Drop extends Game {
 
+    //lo recomendable es implementar el metodo singleton en la clase game, pues esta se utilizara en todas las pantallas
+    //Es un poco diferente a como normalmente se utiliza en otros proyectos
+    public static Drop Instance;
+
     //The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
     //Estos elementos seran publicos para llamarse en el mainmenuscreen
     //En resumen para todas las pantallas debemos utilizar estos font y batch
@@ -18,6 +22,11 @@ public class Drop extends Game {
 //    BitmapFont object is used, along with a SpriteBatch, to render text onto the screen.
     public BitmapFont font;
 
+    //constructor necesario para poder utilizar singleton
+    public Drop() {
+
+        Instance = this;
+    }
 
     @Override
     public void create() {
@@ -26,8 +35,7 @@ public class Drop extends Game {
         font = new BitmapFont();
 
 //        Next, we set the Screen of the Game to a MainMenuScreen object,
-//        with a Drop instance as its first and only parameter.
-        this.setScreen(new MainMenuScreen(this));
+        this.setScreen(new MainMenuScreen());
     }
 
     //A common mistake is to forget to call super.render() with a Game implementation. Without this call, the Screen that

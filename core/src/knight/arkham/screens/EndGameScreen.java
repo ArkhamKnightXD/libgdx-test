@@ -9,7 +9,8 @@ import knight.arkham.Drop;
 
 public class EndGameScreen extends ScreenAdapter {
 
-    private final Drop game;
+    //Inicializo mi clase game con la instancia de game que ya existe
+    private final Drop game = Drop.Instance;
 
     private final OrthographicCamera camera;
 
@@ -19,9 +20,8 @@ public class EndGameScreen extends ScreenAdapter {
 
     private final boolean playerHasWin;
 
-    public EndGameScreen(Drop game, boolean playerHasWin) {
+    public EndGameScreen(boolean playerHasWin) {
 
-        this.game = game;
         this.playerHasWin = playerHasWin;
 
         camera = new OrthographicCamera();
@@ -36,10 +36,10 @@ public class EndGameScreen extends ScreenAdapter {
     public void show() {
 
         if (playerHasWin)
-            playerWinSound.play();
+            playerWinSound.play(0.1f);
 
         else
-            playerLostSound.play();
+            playerLostSound.play(0.1f);
     }
 
 
@@ -67,7 +67,7 @@ public class EndGameScreen extends ScreenAdapter {
         //si el mouse toca la pantalla , cambiaremos la pantalla del menu hacia la del juego
         if (Gdx.input.isTouched()) {
 
-            game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreen());
             dispose();
         }
     }
