@@ -3,6 +3,7 @@ package knight.arkham.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,6 +15,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import knight.arkham.Drop;
+import knight.arkham.helpers.AssetsController;
+
 import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
@@ -58,9 +61,25 @@ public class GameScreen extends ScreenAdapter {
 
 	private int playerLives;
 
+	private final AssetsController assetsController = new AssetsController();
+
+	//Creo asset manager para manejar los asset de esta forma, Esta es la forma ideal en la que se deben de trabajar los assets
+	private final AssetManager localAssetsManager;
+
 	//El metodo create se llama una sola vez al inicio del juego, aqui es que se deben de crear e inicializar todos
 	//los elementos que tendra esta pantalla, podemos reemplazar el metodo create por el constructor
 	public GameScreen() {
+
+		localAssetsManager = assetsController.getGlobalAssetsManager();
+
+		//la carga de los assets se debe de hacer al principio de la pantalla, ya sea en el constructor
+		//o en el metodo create
+		assetsController.loadAllAssetsByFolder("images");
+		assetsController.loadAllAssetsByFolder("fx");
+		assetsController.loadAllAssetsByFolder("music");
+
+		//y al final indico a mi app que espere hasta que todos mis assets esten cargados
+		localAssetsManager.finishLoading();
 
 		//instanciamos el arreglo y llamo a la funcion de raindrops
 		raindrops = new Array<>();
@@ -69,13 +88,13 @@ public class GameScreen extends ScreenAdapter {
 		playerLives = 3;
 
 		//De esta forma guardo las imagenes de assets en la variables que ya defini
-		bucketImage = new Texture("images/bucket.png");
-		dropImage = new Texture("images/drop.png");
+		bucketImage = localAssetsManager.get("images/bucket.png", Texture.class);
+		dropImage = localAssetsManager.get("images/drop.png", Texture.class);
 
 		//De esta forma guardo tanto los fx y musica de los assets en las variables que ya defini
 		//utilizamos el files.internal para referirnos a los elementos de nuestra carpeta assets
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("fx/drop.wav"));
-		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("music/rain.mp3"));
+		dropSound = localAssetsManager.get("fx/drop.wav", Sound.class);
+		rainMusic = localAssetsManager.get("music/rain.mp3", Music.class);
 
 		//setear que la musica se ejecute desde el principio y se repita cuando acabe
 		rainMusic.setVolume(0.2f);
@@ -168,11 +187,16 @@ public class GameScreen extends ScreenAdapter {
 			bucket.x = 800 - 64;
 
 		if (playerLives == 0)
-			game.setScreen(new EndGameScreen(false));
+			game.setScreen(new EndGameScreen(false, localAssetsManager));
 
 		if (gameScore == 50)
-			game.setScreen(new EndGameScreen(true));
+			game.setScreen(new EndGameScreen(true, localAssetsManager));
 
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+
+			localAssetsManager.dispose();
+			Gdx.app.exit();
+		}
 	}
 
 
@@ -277,9 +301,11 @@ public class GameScreen extends ScreenAdapter {
 
 //		Disposables are usually native resources which are not handled by the Java garbage collector.
 //		This is the reason why we need to manually dispose of them.
-		rainMusic.dispose();
-		dropSound.dispose();
-		dropImage.dispose();
-		bucketImage.dispose();
+		localAssetsManager.unload("images/bucket.png");
+		localAssetsManager.unload("images/drop.png");
+		localAssetsManager.unload("fx/drop.wav");
+		localAssetsManager.unload("music/rain.mp3");
+
+		//y revisare metodo para cargar todos mis asset de un golpe
 	}
 }

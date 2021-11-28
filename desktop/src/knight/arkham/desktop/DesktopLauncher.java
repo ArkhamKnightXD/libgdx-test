@@ -17,6 +17,10 @@ public class DesktopLauncher {
 		config.width = 800;
 		config.height = 480;
 
+		//Con esto evitamos el molesto error que sale cuando cerramos la aplicacion de forma forzada
+		//ya sea cerrando la ventana o presionando escape si esta configurado
+		config.forceExit = false;
+
 		//Aqui finalmente ejecutamos el codigo fuente de nuestro juego junto a las configuraciones que indicamos
 		new LwjglApplication(new Drop(), config);
 	}

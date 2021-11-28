@@ -2,6 +2,7 @@ package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -20,15 +21,20 @@ public class EndGameScreen extends ScreenAdapter {
 
     private final boolean playerHasWin;
 
-    public EndGameScreen(boolean playerHasWin) {
+    private final AssetManager localManager;
+
+
+    public EndGameScreen(boolean playerHasWin, AssetManager manager) {
 
         this.playerHasWin = playerHasWin;
+
+        localManager = manager;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
-        playerWinSound = Gdx.audio.newSound(Gdx.files.internal("fx/win.wav"));
-        playerLostSound = Gdx.audio.newSound(Gdx.files.internal("fx/gameOver.wav"));
+        playerLostSound = localManager.get("fx/gameOver.wav", Sound.class);
+        playerWinSound = localManager.get("fx/win.wav", Sound.class);
     }
 
 
@@ -76,7 +82,9 @@ public class EndGameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
 
-        playerWinSound.dispose();
-        playerLostSound.dispose();
+        //al ser la ultima pantalla limpio mi assetmanager de todos mis assets
+        localManager.clear();
+
+        //el dispose del assetmanager tambien resetea el asset manager desde 0
     }
 }

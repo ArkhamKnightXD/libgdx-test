@@ -35,7 +35,7 @@ public class Drop extends Game {
         font = new BitmapFont();
 
 //        Next, we set the Screen of the Game to a MainMenuScreen object,
-        this.setScreen(new MainMenuScreen());
+        setScreen(new MainMenuScreen());
     }
 
     //A common mistake is to forget to call super.render() with a Game implementation. Without this call, the Screen that
