@@ -2,7 +2,6 @@ package knight.arkham.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
 
@@ -12,13 +11,9 @@ public class MainMenuScreen extends ScreenAdapter {
     //Realizo inyeccion de dependencia de mi clase juego
     private final Drop game = Drop.Instance;
 
-    private final OrthographicCamera camera;
-
     public MainMenuScreen() {
 
-        //En el menu principal tambien debemos setear otra camara, en cada pantalla esto debe de ser asi
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        //Para pantallas estaticas no es necesario utilizar camaras
     }
 
 
@@ -26,11 +21,6 @@ public class MainMenuScreen extends ScreenAdapter {
     public void render(float delta) {
 
         ScreenUtils.clear(0, 0, 0.2f, 1);
-
-        camera.update();
-
-//        Aqui utilizaremos el batch y el font de la clase game
-        game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
 
@@ -46,12 +36,6 @@ public class MainMenuScreen extends ScreenAdapter {
             game.setScreen(new GameScreen());
             dispose();
         }
-
     }
 
-
-    @Override
-    public void dispose() {
-
-    }
 }

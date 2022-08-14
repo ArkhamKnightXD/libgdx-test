@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
 
@@ -12,8 +11,6 @@ public class EndGameScreen extends ScreenAdapter {
 
     //Inicializo mi clase game con la instancia de game que ya existe
     private final Drop game = Drop.Instance;
-
-    private final OrthographicCamera camera;
 
     private final Sound playerWinSound;
 
@@ -29,9 +26,6 @@ public class EndGameScreen extends ScreenAdapter {
         this.playerHasWin = playerHasWin;
 
         localManager = manager;
-
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
 
         playerLostSound = localManager.get("fx/gameOver.wav", Sound.class);
         playerWinSound = localManager.get("fx/win.wav", Sound.class);
@@ -53,10 +47,6 @@ public class EndGameScreen extends ScreenAdapter {
     public void render(float delta) {
 
         ScreenUtils.clear(0, 0, 0.2f, 1);
-
-        camera.update();
-
-        game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
 
@@ -82,9 +72,6 @@ public class EndGameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
 
-        //al ser la ultima pantalla limpio mi assetmanager de todos mis assets
         localManager.clear();
-
-        //el dispose del assetmanager tambien resetea el asset manager desde 0
     }
 }

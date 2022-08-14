@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import knight.arkham.Drop;
 import knight.arkham.helpers.AssetsController;
-
 import java.util.Iterator;
 
 //en la carpeta core iran todas las clases y metodos que serviran para mi juego, ya sea para desktop o las otras
@@ -39,7 +38,7 @@ public class GameScreen extends ScreenAdapter {
 	private final Music rainMusic;
 
 	//Aqui definimos la variable que sera la camara
-	private final OrthographicCamera camera;
+//	private final OrthographicCamera camera;
 
 	//para manejar la posicion y tamaño del bucket necesitamos esta variable, basicamente con esto es que manejaremos
 	// las imagenes en el juego
@@ -102,10 +101,10 @@ public class GameScreen extends ScreenAdapter {
 		rainMusic.setLooping(true);
 
 		//seteamos la camara
-		camera = new OrthographicCamera();
+//		camera = new OrthographicCamera();
 
 		//le indicamos las dimensiones que cubrira la camara de nuestra pantalla
-		camera.setToOrtho(false, 800, 480);
+//		camera.setToOrtho(false, 800, 480);
 
 		//definimos la posicion y tamaño del bucket
 		bucket = new Rectangle();
@@ -142,7 +141,9 @@ public class GameScreen extends ScreenAdapter {
 	public void render (float delta) {
 
 		//Actualizamos la camara una vez por frame
-		camera.update();
+//		No tengo necesidad de utilizar camara cuando la scene solo ocupa la pantalla del juego
+//		Y no hay necesidad de salir de los bordes de la pantalla
+//		camera.update();
 
 		//method that will check how much time has passed since we
 		// spawned a new raindrop, and creates a new one if necessary
@@ -156,7 +157,7 @@ public class GameScreen extends ScreenAdapter {
 		ScreenUtils.clear(0, 0, 0.2f, 1);
 
 		//Aqui tambien seteamos la camara en el batch
-		game.batch.setProjectionMatrix(camera.combined);
+//		game.batch.setProjectionMatrix(camera.combined);
 
 		//The SpriteBatch class helps make OpenGL happy. It will record all drawing commands in between SpriteBatch.begin()
 		// and SpriteBatch.end(). Once we call SpriteBatch.end() it will submit all drawing requests we made at once,
@@ -268,7 +269,8 @@ public class GameScreen extends ScreenAdapter {
 			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
 
 			//To transform these coordinates to our camera’s coordinate system, we need to call the camera.unproject()
-			camera.unproject(touchPos);
+//			Esto es innecesario
+//			camera.unproject(touchPos);
 
 			//movemos el bucket a esa posicion
 			bucket.x = touchPos.x - 64 / 2;
