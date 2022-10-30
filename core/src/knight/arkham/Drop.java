@@ -5,9 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import knight.arkham.screens.MainMenuScreen;
 
-//Esta sera mi game class
-//The Game class is responsible for handling multiple screens and
-// provides some helper methods for this purpose,
+//Está sera mi game class
+//The Game class is responsible for handling multiple screens and  provides some helper methods for this purpose,
 public class Drop extends Game {
 
     //lo recomendable es implementar el metodo singleton en la clase game, pues esta se utilizara en todas las pantallas
@@ -15,7 +14,7 @@ public class Drop extends Game {
     public static Drop Instance;
 
     //The SpriteBatch is a special class that is used to draw 2D images, like the textures we loaded.
-    //Estos elementos seran publicos para llamarse en el mainmenuscreen
+    //Estos elementos serán públicos para llamarse en el mainMenuScreen
     //En resumen para todas las pantallas debemos utilizar estos font y batch
     public SpriteBatch batch;
 
@@ -43,5 +42,4 @@ public class Drop extends Game {
     public void render() {
         super.render(); // important!
     }
-
 }

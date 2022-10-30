@@ -5,16 +5,13 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.ScreenUtils;
 import knight.arkham.Drop;
 
-//clase encarga de manejar la pantalla de el menu principal del juego debe de implementar Screen
+//clase encargada de manejar la pantalla del menu principal del juego debe de extender ScreenAdapter
 public class MainMenuScreen extends ScreenAdapter {
 
-    //Realizo inyeccion de dependencia de mi clase juego
+    //Realizo inyección de dependencia de mi clase juego
     private final Drop game = Drop.Instance;
 
-    public MainMenuScreen() {
-
-        //Para pantallas estaticas no es necesario utilizar camaras
-    }
+    //Para pantallas statics no es necesario utilizar cámaras
 
 
     @Override
@@ -31,11 +28,7 @@ public class MainMenuScreen extends ScreenAdapter {
         game.batch.end();
 
         //si el mouse toca la pantalla , cambiaremos la pantalla del menu hacia la del juego
-        if (Gdx.input.isTouched()) {
-
+        if (Gdx.input.isTouched())
             game.setScreen(new GameScreen());
-            dispose();
-        }
     }
-
 }
