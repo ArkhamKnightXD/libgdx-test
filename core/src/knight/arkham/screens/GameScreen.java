@@ -168,11 +168,9 @@ public class GameScreen extends ScreenAdapter {
 		game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
 
 		//Aqui nos encargamos de renderizar las gotas
-		for(Rectangle raindrop: raindrops) {
-
+		for(Rectangle raindrop:  new Array.ArrayIterator<>(raindrops))
 			game.batch.draw(dropImage, raindrop.x, raindrop.y);
-		}
-
+		
 		game.batch.end();
 
 		bucketMouseMovement();
